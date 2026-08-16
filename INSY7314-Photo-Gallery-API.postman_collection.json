@@ -1,0 +1,854 @@
+{
+  "info": {
+    "_postman_id": "7d902284-ae13-4647-8332-4f193edbaeb7",
+    "name": "INSY7314 Photo Gallery API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48881772",
+    "_collection_link": "https://go.postman.co/collection/48881772-7d902284-ae13-4647-8332-4f193edbaeb7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Signup User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains a JWT token\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"token\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"New user has user role\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.user.role).to.eql(\"user\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Password is not returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.user).to.not.have.property(\"password\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"PostmanTestUser\",\r\n    \"email\": \"postmantest@example.com\",\r\n    \"password\": \"Password123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/signup",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "auth",
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains a JWT token\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"token\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains user details\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"user\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"_id\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"username\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"email\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"role\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Password is not returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.user).to.not.have.property(\"password\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"updated@example.com\",\r\n  \"password\": \"Password123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Profile contains required user details\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "\r",
+              "    pm.expect(jsonData).to.have.property(\"_id\");\r",
+              "    pm.expect(jsonData).to.have.property(\"username\");\r",
+              "    pm.expect(jsonData).to.have.property(\"email\");\r",
+              "    pm.expect(jsonData).to.have.property(\"role\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Password is not returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.not.have.property(\"password\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_10yh}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/users/me",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update My Profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Profile updated successfully\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.message).to.eql(\"Profile updated successfully.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Updated user details are returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.user).to.have.property(\"_id\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"username\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"email\");\r",
+              "    pm.expect(jsonData.user).to.have.property(\"role\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1e5r}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"UpdatedUser\",\r\n    \"email\": \"updated@example.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/users/me",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response returns an array of users\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Passwords are not returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "\r",
+              "    jsonData.forEach(user => {\r",
+              "        pm.expect(user).to.not.have.property(\"password\");\r",
+              "    });\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1e5r}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Promote User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"User is promoted to admin\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.user.role).to.eql(\"admin\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1e5r}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/users/6a82160f4e8843fe780b45fe/promote",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "6a82160f4e8843fe780b45fe",
+            "promote"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Demote User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"User is demoted to normal user\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.user.role).to.eql(\"user\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{supabase_service_role_api_key_1843}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/users/6a82160f4e8843fe780b45fe/demote",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "6a82160f4e8843fe780b45fe",
+            "demote"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"User deleted successfully\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.message).to.eql(\"User deleted successfully.\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_0if8}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/users/6a82160f4e8843fe780b45fe",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "6a82160f4e8843fe780b45fe"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Photo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Photo uploaded successfully\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.message).to.eql(\"Photo uploaded successfully.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Uploaded photo contains required details\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "\r",
+              "    pm.expect(jsonData.photo).to.have.property(\"_id\");\r",
+              "    pm.expect(jsonData.photo).to.have.property(\"title\");\r",
+              "    pm.expect(jsonData.photo).to.have.property(\"imageUrl\");\r",
+              "    pm.expect(jsonData.photo).to.have.property(\"cloudinaryPublicId\");\r",
+              "    pm.expect(jsonData.photo).to.have.property(\"owner\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_0znw}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "type": "text",
+              "uuid": "bf620885-5fdd-4268-9c7b-02ada5de7b81",
+              "value": "Mountain View"
+            },
+            {
+              "key": "description",
+              "type": "text",
+              "uuid": "0f431824-0ee2-417e-a550-72b2b0fe28b9",
+              "value": "A photograph taken during a hike."
+            },
+            {
+              "key": "image",
+              "type": "file",
+              "uuid": "d37979a9-e2a2-48ba-bb55-9b5dcc40a26a",
+              "src": "postman-cloud:///1f199a9f-039d-4240-9496-4d9ed9544409"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/photos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "photos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Gallery Photos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response returns an array of photos\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Photos contain required details\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "\r",
+              "    if (jsonData.length > 0) {\r",
+              "        pm.expect(jsonData[0]).to.have.property(\"_id\");\r",
+              "        pm.expect(jsonData[0]).to.have.property(\"title\");\r",
+              "        pm.expect(jsonData[0]).to.have.property(\"imageUrl\");\r",
+              "        pm.expect(jsonData[0]).to.have.property(\"owner\");\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1843}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/photos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "photos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Photos Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response returns an array of photos\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an(\"array\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Admin photo data includes owner information\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "\r",
+              "    if (jsonData.length > 0) {\r",
+              "        pm.expect(jsonData[0]).to.have.property(\"owner\");\r",
+              "        pm.expect(jsonData[0].owner).to.have.property(\"username\");\r",
+              "        pm.expect(jsonData[0].owner).to.have.property(\"email\");\r",
+              "        pm.expect(jsonData[0].owner).to.have.property(\"role\");\r",
+              "    }\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1843}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/photos/all",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "photos",
+            "all"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Photo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Photo updated successfully\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.message).to.eql(\"Photo updated successfully.\");\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Updated photo details are returned\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.photo.title).to.eql(\"Updated Postman Test Photo\");\r",
+              "    pm.expect(jsonData.photo.description).to.eql(\r",
+              "        \"This photo was updated during API testing.\"\r",
+              "    );\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1843}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "title",
+              "type": "text",
+              "uuid": "a41328a9-7ccf-47c7-b9e6-b8b7181bf80b",
+              "value": "Updated Postman Test Photo"
+            },
+            {
+              "key": "description",
+              "type": "text",
+              "uuid": "57bcd18f-d0b4-4c08-a384-f4f460a4e498",
+              "value": "This photo was updated during API testing."
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/photos/6a8216f34e8843fe780b45ff",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "photos",
+            "6a8216f34e8843fe780b45ff"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Photo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Photo deleted successfully\", function () {\r",
+              "    const jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.message).to.eql(\"Photo deleted successfully.\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{json_web_token_1843}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/photos/6a8216f34e8843fe780b45ff",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "photos",
+            "6a8216f34e8843fe780b45ff"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "json_web_token_03iy",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0wfd",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0ynp",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0if8",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_10yh",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1e5r",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_1843",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0if8",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0znw",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1843",
+      "secret": true
+    }
+  ]
+}
